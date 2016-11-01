@@ -1,0 +1,77 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Get-a-key by tmunzer</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/github-light.css">
+    <meta name="viewport" content="width=device-width">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>Get-a-key</h1>
+        <p>single page app to get a PPSK from HMNG service</p>
+
+        <p class="view"><a href="https://github.com/tmunzer/get-a-key">View the Project on GitHub <small>tmunzer/get-a-key</small></a></p>
+
+
+        <ul>
+          <li><a href="https://github.com/tmunzer/get-a-key/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/tmunzer/get-a-key/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/tmunzer/get-a-key">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <h1>
+<a id="get-a-key" class="anchor" href="#get-a-key" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>get-a-key</h1>
+
+<p>single page app to get a PPSK from HMNG service. This App can use AzureAD or ADFS (soon) to authenticate users.
+<img src="get-a-key.png" alt="Get-a-Key"></p>
+
+<h2>
+<a id="install" class="anchor" href="#install" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Install</h2>
+
+<p>This Reference APP is built over NodeJS. To use is, you will have to</p>
+
+<ul>
+<li>Install NodeJS LTS: <a href="https://nodejs.org/en/download/">https://nodejs.org/en/download/</a>
+</li>
+<li>Clone this repo</li>
+<li>Configure the API paramerts, in the <code>/config.js</code> file. You will find an example in <code>/config_example</code>, and you will have to alreday have an account on the Aerohive Developper Portal <a href="https://developer.aerohive.com/">https://developer.aerohive.com/</a>
+</li>
+<li>install node modules (<code>npm install</code>from the project folder)</li>
+<li>install bower dependencies (<code>bower install</code>from the project folder)</li>
+<li>Start the APP with from <code>/bin/www</code>.</li>
+</ul>
+
+<h2>
+<a id="requirements" class="anchor" href="#requirements" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Requirements</h2>
+
+<ul>
+<li>This App is using mongoDB to store the configuration and customization. You will have to configure the mongoDB location in the <code>/config.js</code>file.</li>
+<li>This App has to be reachable through HTTPS to use OAuth (required to configure the App and to use AzureAD OAuth for users authentication). </li>
+</ul>
+
+<h2>
+<a id="what-will-come-next" class="anchor" href="#what-will-come-next" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>What will come next</h2>
+
+<ul>
+<li>ADFS integration</li>
+<li>Docker version</li>
+</ul>
+      </section>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/tmunzer">tmunzer</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="javascripts/scale.fix.js"></script>
+    
+  </body>
+</html>
