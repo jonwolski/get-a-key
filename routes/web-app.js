@@ -6,8 +6,9 @@ var router = express.Router();
 var Customization = require("../bin/models/customization");
 
 function getCustom(req, res, next) {
-    if (!req.session.xapi && !req.session.passport) {
-        res.redirect('/login/');
+    if (!req.session.xapi || !req.session.passport) {
+        if (req.session.account) res.redirect('/login/' + req.session.account._id);
+        else res.redirect('/login/');
     } else if (req.session.account.customization)
         Customization
             .findById(req.session.account.customization)
