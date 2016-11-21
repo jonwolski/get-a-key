@@ -42,11 +42,12 @@ function getCustom(req, next) {
 
 router.get("/login/:account_id/", getAccount, function (req, res) {
     var method = "";
+    req.session.state = (Math.floor(Math.random() * 999999) + 1);
     if (req.session.account.azureAd) method = "/aad/" + req.params.account_id + "/login";
     else if (req.session.account.adfs) method = "/adfs/" + req.params.account_id + "/login";
     res.render("login", {
         title: 'Get a Key!',
-        oauthUrl: "https://cloud.aerohive.com/thirdpartylogin?client_id=" + devAccount.clientID + "&redirect_uri=" + devAccount.redirectUrl,
+        oauthUrl: "https://cloud.aerohive.com/services/oauth2/authorize?response_type=code&state=" + req.session.state + "&client_id=" + devAccount.clientID + "&redirect_uri=" + devAccount.redirectUrl,
         method: method,
         custom: req.custom
     });
@@ -57,9 +58,10 @@ router.get("/login/:account_id/callback", function (req, res) {
 })
 
 router.get("/login", function (req, res) {
+    req.session.state = (Math.floor(Math.random() * 999999) + 1);
     res.render("login", {
         title: 'Get a Key!',
-        oauthUrl: "https://cloud.aerohive.com/thirdpartylogin?client_id=" + devAccount.clientID + "&redirect_uri=" + devAccount.redirectUrl,
+        oauthUrl: "https://cloud.aerohive.com/services/oauth2/authorize?response_type=code&state=" + req.session.state + "&client_id=" + devAccount.clientID + "&redirect_uri=" + devAccount.redirectUrl,
         method: null
     });
 })

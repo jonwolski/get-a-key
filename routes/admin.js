@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var OAuth = require("../bin/aerohive/api/oauth");
-var devApp = require('../config.js').devAccount;
+var devAccount = require('../config.js').devAccount;
 
 var Account = require('../bin/models/account');
 var Customization = require("../bin/models/customization");
@@ -12,9 +12,8 @@ var Customization = require("../bin/models/customization");
 router.get('/oauth/reg', function (req, res) {
     if (req.query.error) {
         res.render('error', { error: { message: req.query.error } });
-    } else if (req.query.authCode) {
-        var authCode = req.query.authCode;
-        OAuth.getPermanentToken(authCode, devApp.redirectUrl, devApp.clientSecret, devApp.clientID, function (data) {
+    } else if (req.query.code && req.query.state == req.session.state) {   
+        OAuth.getPermanentToken(req.query.code, devAccount, function (data) {
             if (data.error) res.render('error', { error: data.error })
             else if (data.data) {
                 var numAccounts = 0;

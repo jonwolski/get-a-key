@@ -1,32 +1,37 @@
 var https = require('https');
 
-module.exports.getPermanentToken = function(authCode, redirectUrl, clientSecret, clientID, callback){
+module.exports.getPermanentToken = function (code, devAccount, callback) {
     var options = {
         host: 'cloud.aerohive.com',
         port: 443,
-        path: '/services/acct/thirdparty/accesstoken?authCode='+authCode+'&redirectUri='+redirectUrl,
+        path: '/services/oauth2/token?' +
+        'grant_type=authorization_code' +
+        '&code=' + code +
+        '&redirect_uri=' + devAccount.redirectUrl +
+        '&client_id=' + devAccount.clientID +
+        '&client_secret=' + devAccount.clientSecret,
         method: 'POST',
         headers: {
-            'X-AH-API-CLIENT-SECRET' : clientSecret,
-            'X-AH-API-CLIENT-ID':clientID,
-            'X-AH-API-CLIENT-REDIRECT-URI': redirectUrl
+            'Content-Type': 'application/x-www-form-urlencoded'
         }
     };
-
-    var req = https.request(options, function(res) {
+    console.log(options);
+    var req = https.request(options, function (res) {
         console.info('STATUS: ' + res.statusCode);
         console.info('HEADERS: ' + JSON.stringify(res.headers));
         res.setEncoding('utf8');
         res.on('data', function (data) {
+            console.log(data);
             callback(JSON.parse(data));
         });
     });
 
-    req.on('error', function(err) {
+    req.on('error', function (err) {
+        console.log(err);
         callback(err);
     });
 
-// write data to request body
+    // write data to request body
     req.write('data\n');
     req.write('data\n');
     req.end();
