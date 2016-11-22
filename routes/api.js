@@ -5,7 +5,7 @@ var API = require("../bin/aerohive/api/main");
 var serverHostname = require("../config.js").appServer.vhost;
 
 var Account = require("../bin/models/account");
-var AzureAd = require("../bin/models/azureAd");
+var Azure = require("../bin/models/azure");
 var Config = require("../bin/models/configuration");
 var Customization = require("../bin/models/customization");
 /* GET users listing. */
@@ -186,78 +186,6 @@ router.post("/admin/config", function (req, res, next) {
     } else res.status(403).send('Unknown session');
 })
 
-router.get("/aad", function (req, res, next) {
-    if (req.session.xapi) {
-        Account
-            .findById(req.session.account._id)
-            .populate("azureAd")
-            .exec(function (err, account) {
-                if (err) res.status(500).json({ error: err });
-                else if (account)
-                    res.status(200).json({
-                        signin: "https://" + serverHostname + "/login/" + account._id + "/",
-                        callback: "https://" + serverHostname + "/aad/" + account._id + "/callback",
-                        logout: "https://" + serverHostname + "/login/" + account._id + "/",
-                        azureAd: account.azureAd
-                    });
-                else res.status(500).json({ err: "not able to retrieve the account" });
-            })
-    } else res.status(403).send('Unknown session');
-})
-
-function saveAzureAd(req, res) {
-    Account
-        .find({ ownerId: req.session.xapi.ownerId, vpcUrl: req.session.xapi.vpcUrl, vhmId: req.session.xapi.vhmId })
-        .exec(function (err, account) {
-            if (err) res.status(500).json({ error: err });
-            else if (account.length == 1) {
-                if (account[0].azureAd) {
-                    AzureAd.update({ _id: account[0].azureAd }, req.body.azureAd, function (err, result) {
-                        if (err) res.status(500).json({ error: err });
-                        else res.status(200).json({ action: "save", status: 'done' });
-                    })
-                } else AzureAd(req.body.azureAd).save(function (err, result) {
-                    if (err) res.status(500).json({ error: err });
-                    else {
-                        account[0].azureAd = result;
-                        account[0].adfs = null;
-                        account[0].save(function (err, result) {
-                            if (err) res.status(500).json({ error: err });
-                            else res.status(200).json({ action: "save", status: 'done' });
-                        })
-                    }
-                });
-            } else res.status(500).json({ error: "not able to retrieve the account" });
-        });
-}
-function saveAdfs(req, res) {
-    Account
-        .find({ ownerId: req.session.xapi.ownerId, vpcUrl: req.session.xapi.vpcUrl, vhmId: req.session.xapi.vhmId })
-        .exec(function (err, account) {
-            if (err) res.status(500).json({ error: err });
-            else if (account.length == 1) {
-                if (account[0].azureAd) AzureAd.findByIdAndRemove(account[0].azureAd, function (err) {
-                    if (err) res.status(500).json({ error: "not able to save data" });
-                    else {
-                        account[0].azureAd = null;
-                        account[0].save(function (err, result) {
-                            if (err) res.status(500).json({ error: "not able to save data" });
-                            else res.status(200).json({ action: "save", status: 'done' });
-                        })
-                    }
-                });
-                else res.status(200).json({ action: "save", status: 'done' });
-            }
-            else res.status(500).json({ error: "not able to retrieve the account" });
-        });
-}
-
-router.post("/aad/", function (req, res, next) {
-    if (req.session.xapi) {
-        if (req.body.azureAd) saveAzureAd(req, res);
-        else res.status(500).send({ error: "missing azureAd" });
-    } else res.status(403).send('Unknown session');
-})
 
 router.get("/admin/custom/", function (req, res, next) {
     if (req.session.xapi) {

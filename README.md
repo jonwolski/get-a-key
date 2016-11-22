@@ -1,11 +1,11 @@
 # Get-a-Key
-single page app to get a PPSK from HMNG service. This App can use AzureAD or ADFS (soon) to authenticate users.
+single page app to get a PPSK from HMNG service. This App can use Azure or ADFS (soon) to authenticate users.
 ![Get-a-Key](https://github.com/tmunzer/get-a-key/blob/master/get-a-key.png?raw=true)
 
 # Get-a-Key v1.0
 * full user interface customization
 * full configuration interface
-* AzureAD integration
+* Azure integration
 * Docker version (deployement script available below) with NGINX and Let's Encrypt
 
 ## Docker Deployment
@@ -25,7 +25,7 @@ This Reference APP is built over NodeJS. To use is, you will have to
 
 ## Standalone Requirements
 * This App is using mongoDB to store the configuration and customization. You will have to configure the mongoDB location in the `/config.js`file.
-* This App has to be reachable through HTTPS to use OAuth (required to configure the App and to use AzureAD OAuth for users authentication). 
+* This App has to be reachable through HTTPS to use OAuth (required to configure the App and to use Azure OAuth for users authentication). 
 
 ## What will come next
 * ADFS integration

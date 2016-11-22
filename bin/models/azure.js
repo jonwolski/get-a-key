@@ -1,6 +1,6 @@
 var mongoose = require('mongoose');
 
-var AzureAdSchema = new mongoose.Schema({
+var AzureSchema = new mongoose.Schema({
     clientID: { type: String, required: true },
     clientSecret: { type: String, required: true },
     tenant: { type: String, required: false},
@@ -9,11 +9,11 @@ var AzureAdSchema = new mongoose.Schema({
     updated_at    : { type: Date }
 });
 
-var AzureAd = mongoose.model('AzureAd', AzureAdSchema);
+var Azure = mongoose.model('Azure', AzureSchema);
 
 
 // Pre save
-AzureAdSchema.pre('save', function(next) {
+AzureSchema.pre('save', function(next) {
     var now = new Date();
     this.updated_at = now;
     if ( !this.created_at ) {
@@ -22,5 +22,5 @@ AzureAdSchema.pre('save', function(next) {
     next();
 });
 
-module.exports = AzureAd;
+module.exports = Azure;
 

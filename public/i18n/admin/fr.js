@@ -44,8 +44,8 @@ var fr = {
     authentication: {
         authentication: "Authentification",
         method: "Méthode d'authentification",
-        azureAd: {
-            azureAd: "Azure AD",
+        azure: {
+            azure: "Azure AD",
             params: "configuration Azure AD",
             clientID: "Application ID",
             clientSecret: "Application Key",

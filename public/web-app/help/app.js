@@ -9,12 +9,12 @@ var gak = angular.module("gak", [
 gak
     .config(function ($routeProvider) {
         $routeProvider
-            .when("/azureAD", {
+            .when("/azure", {
                 module: "App",
                 controller: "AppCtrl"
             })
             .otherwise({
-                redirectTo: "/azureAD/"
+                redirectTo: "/azure/"
             });
     })
     .config(function ($mdThemingProvider) {

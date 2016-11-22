@@ -31,45 +31,45 @@ html
                 div.inside(md-whiteframe="5" style="width: 100%" )
                     md-toolbar
                         div.md-toolbar-tools
-                            h2 AzureAD Configuration Help
+                            h2 Azure Configuration Help
                     md-content(layout="column" layout-padding)
-                        h3 Get all the information to configure your AzureAD API
-                        span You will find here the information needed to configure the AzureAD APIs (signIn URL, callback URL and logout URL).
-                        img(src="/web-app/help/azureAD/params.png" style="width: 50%;margin: auto;")
+                        h3 Get all the information to configure your Azure API
+                        span You will find here the information needed to configure the Azure APIs (signIn URL, callback URL and logout URL).
+                        img(src="/web-app/help/azure/params.png" style="width: 50%;margin: auto;")
                         h3 Connect to you 
-                            a(href="https://portal.azure.com/" target=_blank) AzureAD portal
+                            a(href="https://portal.azure.com/" target=_blank) Azure portal
                         span On your Azure Portal, click on "App Registration" (if it's not available, click on "More Services" to find it).
-                        img(src="/web-app/help/azureAD/azure1.png" style="width: 50%;margin: auto;")
+                        img(src="/web-app/help/azure/azure1.png" style="width: 50%;margin: auto;")
                         h3 Create a new App
                         span Click on "Add" and: 
                         ul(style="list-style-type: circle")
                             li fill a name for the App
                             li Select the "Web App / API" type
                             li put the "SignIn URL" from the Settings Page in the Sign-on URL field
-                        img(src="/web-app/help/azureAD/azure2.png" style="width: 50%;margin: auto;")
+                        img(src="/web-app/help/azure/azure2.png" style="width: 50%;margin: auto;")
                         h3 Logout URL
                         span The Logout URL is the URL where to send back the user after the logout.
                         span Put here the "logout URL" from the "Settings page".
-                        img(src="/web-app/help/azureAD/azure3.png" style="width: 50%;margin: auto;")
+                        img(src="/web-app/help/azure/azure3.png" style="width: 50%;margin: auto;")
                         h3 Callback URL
                         span Once the App is created, you will be able to configure the Callback URL with the "Callback URL" from the settings page.
                         span The Callback URL is the URL where Azure is sending the authorization token, to validate the user authentication against the App.
                         br
                         span Remove the pre-configured callback URL, add yours, and click "Save"
-                        img(src="/web-app/help/azureAD/azure4.png" style="width: 50%;margin: auto;")
+                        img(src="/web-app/help/azure/azure4.png" style="width: 50%;margin: auto;")
                         h3 App Key
                         span You now have to generate a unique key for this App. Under the "Keys" section, create a new key by
                         ul
                             li putting a new name
                             li setting the key validity
                             li clicking Save
-                        img(src="/web-app/help/azureAD/azure5.png" style="width: 50%;margin: auto;")
+                        img(src="/web-app/help/azure/azure5.png" style="width: 50%;margin: auto;")
                         span The Key value in only displayed once you click "Save", and you will not be able to retrieve it after that.
                         span Copy the Key and paste it into the "Application Key" field on the "Settings page".
                         h3 Retrieve the lasts parameters
                         span The easiest way to find the lasts parameters (Application ID, Tenant and Resource) is to display the app Manifest.
                         span To do so, you can click on the "Manifest" button.
-                        img(src="/web-app/help/azureAD/azure6.png" style="width: 50%;margin: auto;")
+                        img(src="/web-app/help/azure/azure6.png" style="width: 50%;margin: auto;")
                         span You will find here:
                         ul 
                             li The "Application Id" value, which is name "AppId"

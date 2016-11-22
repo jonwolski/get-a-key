@@ -18,7 +18,7 @@ passport.deserializeUser(function (user, done) {
 function getAccount(req, res, next) {
   Account
     .findById(req.params.account_id)
-    .populate("azureAd")
+    .populate("azure")
     .exec(function (err, result) {
       if (err) res.status(500).json({ error: err });
       else {

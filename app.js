@@ -5,9 +5,6 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
-var init = require("./bin/init");
-init();
-
 var app = express();
 
 //===============MONGODB=================
@@ -18,10 +15,12 @@ global.db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function () {
     // Create your schemas and models here.
+  
+var init = require("./bin/init");
+init();
 });
 
 mongoose.connect('mongodb://'+ mongoConfig.host +'/' + mongoConfig.base);
-
 
 
 //===============PASSPORT=================
@@ -64,8 +63,8 @@ app.get('/fail', function (req, res, next) {
 var custom = require('./routes/custom');
 app.use('/custom/', custom);
 //Azure AD
-var azureAd = require('./routes/azureAd');
-app.use('/aad/', azureAd);
+var azure = require('./routes/azure');
+app.use('/azure/', azure);
 //ADFS
 var adfs = require('./routes/adfs');
 app.use('/adfs/', adfs);

@@ -10,7 +10,7 @@ var Customization = require("../bin/models/customization");
 function getAccount(req, res, next) {
     Account
         .findById(req.params.account_id)
-        .populate("azureAd")
+        .populate("azure")
         .populate("adfs")
         .populate("config")
         .exec(function (err, account) {
@@ -42,7 +42,7 @@ function getCustom(req, next) {
 
 router.get("/login/:account_id/", getAccount, function (req, res) {
     var method = "";
-    if (req.session.account.azureAd) method = "/aad/" + req.params.account_id + "/login";
+    if (req.session.account.azure) method = "/azure/" + req.params.account_id + "/login";
     else if (req.session.account.adfs) method = "/adfs/" + req.params.account_id + "/login";
     res.render("login", {
         title: 'Get a Key!',
@@ -53,7 +53,7 @@ router.get("/login/:account_id/", getAccount, function (req, res) {
 })
 
 router.get("/login/:account_id/callback", function (req, res) {
-    res.render('error', { error: { message: "It seems the callback URL is misconfigured on your AzureAD or ADFS. Please be sure to use the callback url from the configuration interface." } });
+    res.render('error', { error: { message: "It seems the callback URL is misconfigured on your Azure or ADFS. Please be sure to use the callback url from the configuration interface." } });
 })
 
 router.get("/login", function (req, res) {
@@ -64,8 +64,8 @@ router.get("/login", function (req, res) {
     });
 })
 router.get("/logout/", function (req, res) {
-    if (req.session.account.azureAd) {
-        res.redirect("https://login.windows.net/" + req.session.account.azureAd.tenant + "/oauth2/logout?post_logout_redirect_uri=https://" + serverHostname + "/login/" + req.session.account._id + "/");
+    if (req.session.account.azure) {
+        res.redirect("https://login.windows.net/" + req.session.account.azure.tenant + "/oauth2/logout?post_logout_redirect_uri=https://" + serverHostname + "/login/" + req.session.account._id + "/");
     } else res.redirect("/");
     req.logout();
     req.session.destroy();

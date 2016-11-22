@@ -1,12 +1,12 @@
 angular
     .module('Authentication')
-    .controller("AuthenticationCtrl", function ($scope, $mdDialog, AzureAdService) {
+    .controller("AuthenticationCtrl", function ($scope, $mdDialog, AzureService) {
 
         var initialized = false;
         var request;
         $scope.isWorking = false;
         $scope.admin = {
-            azureAd: {
+            azure: {
                 clientId: "",
                 clientSecret: "",
                 tenant: "",
@@ -16,14 +16,14 @@ angular
         };
 
         $scope.method = {
-            aad: true,
+            azure: true,
             adfs: false
         };
-        $scope.$watch("method.aad", function () {
-            $scope.method.adfs = !$scope.method.aad;
+        $scope.$watch("method.azure", function () {
+            $scope.method.adfs = !$scope.method.azure;
         });
         $scope.$watch("method.adfs", function () {
-            $scope.method.aad = !$scope.method.adfs;
+            $scope.method.azure = !$scope.method.adfs;
         })
 
 
@@ -55,10 +55,10 @@ angular
         }
 
 
-        function azureAdSaveConfig() {
+        function azureSaveConfig() {
             $scope.isWorking = true;
             if (request) request.abort();
-            request = AzureAdService.post($scope.admin.azureAd);
+            request = AzureService.post($scope.admin.azure);
             request.then(function (promise) {
                 $scope.isWorking = false;
                 if (promise && promise.error) apiWarning(promise.error);
@@ -67,18 +67,18 @@ angular
         }
 
         $scope.isWorking = true;
-        request = AzureAdService.get();
+        request = AzureService.get();
         request.then(function (promise) {
             $scope.isWorking = false;
             if (promise && promise.error) apiWarning(promise.error);
             else {
-                $scope.method.aad = true;
+                $scope.method.azure = true;
                 $scope.method.adfs = false;
-                if (promise.data.azureAd) {
-                    $scope.admin.azureAd = promise.data.azureAd;
+                if (promise.data.azure) {
+                    $scope.admin.azure = promise.data.azure;
                 } else {
                     $scope.admin = {
-                        azureAd: {
+                        azure: {
                             clientId: "",
                             clientSecret: "",
                             tenant: "",
@@ -87,20 +87,20 @@ angular
                         adfs: {}
                     };
                 }
-                $scope.admin.azureAd.signin = promise.data.signin;
-                $scope.admin.azureAd.callback = promise.data.callback;
-                $scope.admin.azureAd.logout = promise.data.logout;
+                $scope.admin.azure.signin = promise.data.signin;
+                $scope.admin.azure.callback = promise.data.callback;
+                $scope.admin.azure.logout = promise.data.logout;
             }
         })
 
 
 
         $scope.isValid = function () {
-            if ($scope.method.aad == true) {
-                if (!$scope.admin.azureAd.clientID || $scope.admin.azureAd.clientID == "") return false;
-                else if (!$scope.admin.azureAd.clientSecret || $scope.admin.azureAd.clientSecret == "") return false;
-                else if (!$scope.admin.azureAd.tenant || $scope.admin.azureAd.tenant == "") return false;
-                else if (!$scope.admin.azureAd.resource || $scope.admin.azureAd.resource == "") return false;
+            if ($scope.method.azure == true) {
+                if (!$scope.admin.azure.clientID || $scope.admin.azure.clientID == "") return false;
+                else if (!$scope.admin.azure.clientSecret || $scope.admin.azure.clientSecret == "") return false;
+                else if (!$scope.admin.azure.tenant || $scope.admin.azure.tenant == "") return false;
+                else if (!$scope.admin.azure.resource || $scope.admin.azure.resource == "") return false;
                 else return true;
             }
             else if (isWorking) return true;
@@ -109,30 +109,30 @@ angular
 
         $scope.save = function () {
             $scope.isWorking = true;
-            if ($scope.method.aad == true) {
-                azureAdSaveConfig();
+            if ($scope.method.azure == true) {
+                azureSaveConfig();
             }
         }
     })
-    .factory("AzureAdService", function ($http, $q, $rootScope) {
+    .factory("AzureService", function ($http, $q, $rootScope) {
 
-        function get(azureAdConfig) {
+        function get(azureConfig) {
             var canceller = $q.defer();
             var request = $http({
-                url: "/api/aad/",
+                url: "/api/azure/",
                 method: "GET",
-                data: { azureAd: azureAdConfig },
+                data: { azure: azureConfig },
                 timeout: canceller.promise
             });
             return httpReq(request);
         }
 
-        function post(azureAdConfig) {
+        function post(azureConfig) {
             var canceller = $q.defer();
             var request = $http({
-                url: "/api/aad/",
+                url: "/api/azure/",
                 method: "POST",
-                data: { azureAd: azureAdConfig },
+                data: { azure: azureConfig },
                 timeout: canceller.promise
             });
             return httpReq(request);
