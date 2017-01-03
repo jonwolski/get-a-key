@@ -33,7 +33,6 @@ module.exports.getPermanentToken = function (code, devAccount, callback) {
 
     // write data to request body
     req.write('data\n');
-    req.write('data\n');
     req.end();
 };
 
