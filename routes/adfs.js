@@ -63,4 +63,10 @@ router.get('/logout/', function (req, res) {
   res.redirect('/login/');
 });
 
+router.get("/cert", function(req, res){
+  var vhost = require("../config").appServer.vhost;
+  var file = '../certs/'+ vhost + ".xml";
+  res.download(file); 
+})
+
 module.exports = router;

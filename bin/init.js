@@ -23,7 +23,10 @@ module.exports = function () {
                 else {
                     exec(cmd, function (error, stdout, stderr) {
                         if (error) console.log(error);
-                        else console.log("ADFS Certificates created for " + vhost);
+                        else {
+                            console.log("ADFS Certificates created for " + vhost);
+                            i = files.length;
+                        }
                     });
                 }
         });

@@ -7,6 +7,7 @@ var bodyParser = require('body-parser');
 
 var app = express();
 
+
 //===============MONGODB=================
 var mongoose = require('mongoose');
 var mongoConfig = require('./config').mongoConfig;
@@ -50,14 +51,6 @@ app.use('/bower_components',  express.static('../bower_components'));
 
 
 //===============ROUTES=================
-app.get('/fail', function (req, res, next) {
-  setTimeout(function () {
-    var nu = null;
-    nu.access();
-
-    res.send('Hello World');
-  }, 1000);
-});
 
 //Customization
 var custom = require('./routes/custom');

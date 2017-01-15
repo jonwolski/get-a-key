@@ -12,19 +12,48 @@ angular
                 tenant: "",
                 resource: ""
             },
-            adfs: {}
+            adfs: {
+                server: "",
+                entityID: "",
+                loginURL: "",
+                logoutURL: ""
+            }
         };
-
-        $scope.method = {
-            azure: true,
-            adfs: false
-        };
+        $scope.adfsMetadata = undefined;
+        $scope.method = "azure";
         $scope.$watch("method.azure", function () {
             $scope.method.adfs = !$scope.method.azure;
         });
         $scope.$watch("method.adfs", function () {
             $scope.method.azure = !$scope.method.adfs;
         })
+        $scope.$watch("adfsMetadata", function (a, b) {
+            if ($scope.adfsMetadata) {
+                var start, stop, temp;
+                
+                start = $scope.adfsMetadata.indexOf("entityID=") + 10;
+                console.log(start);
+                if (start) $scope.admin.adfs.entityID = $scope.adfsMetadata.substring(start, $scope.adfsMetadata.indexOf("/>", start));
+                start = -1;
+
+                start = $scope.adfsMetadata.indexOf("SingleSignOnService Binding=\"urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect\"");
+console.log(start);
+                if (start) start = $scope.adfsMetadata.indexOf("Location=", start) + 10;
+                console.log(start);
+                if (start) $scope.admin.adfs.loginURL = $scope.adfsMetadata.substr(start, $scope.adfsMetadata.indexOf("\"", start));
+
+                start = -1;
+                start = $scope.adfsMetadata.indexOf("SingleLogoutService Binding=\"urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect\"");
+                console.log(start);
+                if (start) start = $scope.adfsMetadata.indexOf("Location=", start) + 10;
+                console.log(start);
+                if (start) $scope.admin.adfs.logoutURL = $scope.adfsMetadata.substr(start, $scope.adfsMetadata.indexOf("\"", start));
+            }
+        })
+        $scope.adfsCert = function () {
+            if ($scope.admin.adfs.server) return "https://" + $scope.admin.adfs.server + "/FederationMetadata/2007-06/FederationMetadata.xml";
+            else return false;
+        }
 
 
         function apiWarning(warning) {
@@ -103,7 +132,7 @@ angular
                 else if (!$scope.admin.azure.resource || $scope.admin.azure.resource == "") return false;
                 else return true;
             }
-            else if (isWorking) return true;
+            else if ($scope.isWorking) return true;
             else return false;
         }
 

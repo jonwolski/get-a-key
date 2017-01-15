@@ -34,7 +34,7 @@ function saveAzure(req, res) {
 }
 
 
-router.get("/azure", function (req, res, next) {
+router.get("/", function (req, res, next) {
     if (req.session.xapi) {
         Account
             .findById(req.session.account._id)
@@ -53,7 +53,7 @@ router.get("/azure", function (req, res, next) {
     } else res.status(403).send('Unknown session');
 })
 
-router.post("/azure/", function (req, res, next) {
+router.post("/", function (req, res, next) {
     if (req.session.xapi) {
         if (req.body.azure) saveAzure(req, res);
         else res.status(500).send({ error: "missing azure" });

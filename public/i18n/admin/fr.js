@@ -57,7 +57,11 @@ var fr = {
         },
         adfs: {
             adfs: "Service de Fédération AD",
-            params: "configuration ADFS"
+            params: "configuration ADFS",
+            getAdfsMetadata: "Télecharger les Metadonnées ADFS",
+            pasteAdfsMetadata: "Coller les Metadonnées ADFS",
+            getAppCertificate: "Télecharger le certificat Get-a-Key",
+            server: "FQDN du serveur ADFS"
         },
         modal: {
             save_title: "Sauvegarder les modifications?",
