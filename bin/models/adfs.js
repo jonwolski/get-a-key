@@ -2,7 +2,10 @@ var mongoose = require('mongoose');
 
 var AdfsSchema = new mongoose.Schema({
     metadata: { type: String, required: true },
+    entryPoint: { type: String, required: true },
     entityID: { type: String, required: true },
+    loginUrl : { type: String, required: true },
+    logoutUrl: { type: String, required: true },
     certificate: { type: String, required: false},
     created_at    : { type: Date },
     updated_at    : { type: Date }

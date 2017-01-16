@@ -9,26 +9,29 @@ var Azure = require("../bin/models/azure");
 
 function saveAzure(req, res) {
     Account
-        .find({ ownerId: req.session.xapi.ownerId, vpcUrl: req.session.xapi.vpcUrl, vhmId: req.session.xapi.vhmId })
+        .findById(req.session.account._id)
         .exec(function (err, account) {
             if (err) res.status(500).json({ error: err });
-            else if (account.length == 1) {
-                if (account[0].azure) {
-                    Azure.update({ _id: account[0].azure }, req.body.azure, function (err, result) {
+            else if (account) {
+                if (account.azure) {
+                    Azure.update({ _id: account.azure }, req.body.config, function (err, result) {
                         if (err) res.status(500).json({ error: err });
                         else res.status(200).json({ action: "save", status: 'done' });
                     })
-                } else Azure(req.body.azure).save(function (err, result) {
+                } else Azure(req.body.config).save(function (err, result) {
                     if (err) res.status(500).json({ error: err });
                     else {
-                        account[0].azure = result;
-                        account[0].adfs = null;
-                        account[0].save(function (err, result) {
+                        account.azure = result;
+                        account.adfs = null;
+                        account.save(function (err, result) {
                             if (err) res.status(500).json({ error: err });
                             else res.status(200).json({ action: "save", status: 'done' });
                         })
                     }
                 });
+                /*if (account.adfs) Adfs.findByIdAndRemove(account.adfs, function (err) {
+                    console.log("adfs removed");
+                })*/
             } else res.status(500).json({ error: "not able to retrieve the account" });
         });
 }
@@ -55,7 +58,7 @@ router.get("/", function (req, res, next) {
 
 router.post("/", function (req, res, next) {
     if (req.session.xapi) {
-        if (req.body.azure) saveAzure(req, res);
+        if (req.body.config) saveAzure(req, res);
         else res.status(500).send({ error: "missing azure" });
     } else res.status(403).send('Unknown session');
 })

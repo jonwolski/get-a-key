@@ -6,29 +6,34 @@ var serverHostname = require("../config.js").appServer.vhost;
 var Account = require("../bin/models/account");
 var Adfs = require("../bin/models/adfs");
 
-
 function saveAdfs(req, res) {
     Account
-        .find({ ownerId: req.session.xapi.ownerId, vpcUrl: req.session.xapi.vpcUrl, vhmId: req.session.xapi.vhmId })
+        .findById(req.session.account._id)
         .exec(function (err, account) {
             if (err) res.status(500).json({ error: err });
-            else if (account.length == 1) {
-                if (account[0].adfs) Adfs.findByIdAndRemove(account[0].adfs, function (err) {
-                    if (err) res.status(500).json({ error: "not able to save data" });
+            else if (account) {
+                if (account.adfs) {
+                    Adfs.update({ _id: account.adfs }, req.body.config, function (err, result) {
+                        if (err) res.status(500).json({ error: err });
+                        else res.status(200).json({ action: "save", status: 'done' });
+                    })
+                } else Adfs(req.body.config).save(function (err, result) {
+                    if (err) res.status(500).json({ error: err });
                     else {
-                        account[0].adfs = null;
-                        account[0].save(function (err, result) {
-                            if (err) res.status(500).json({ error: "not able to save data" });
+                        account.adfs = result;
+                        account.azure = null;
+                        account.save(function (err, result) {
+                            if (err) res.status(500).json({ error: err });
                             else res.status(200).json({ action: "save", status: 'done' });
                         })
                     }
                 });
-                else res.status(200).json({ action: "save", status: 'done' });
-            }
-            else res.status(500).json({ error: "not able to retrieve the account" });
+                /*if (account.adfs) Azure.findByIdAndRemove(account.azure, function (err) {
+                    console.log("azure removed");
+                })*/
+            } else res.status(500).json({ error: "not able to retrieve the account" });
         });
 }
-
 
 
 router.get("/", function (req, res, next) {
@@ -52,7 +57,7 @@ router.get("/", function (req, res, next) {
 
 router.post("/", function (req, res, next) {
     if (req.session.xapi) {
-        if (req.body.adfs) saveAdfs(req, res);
+        if (req.body.config) saveAdfs(req, res);
         else res.status(500).send({ error: "missing adfs" });
     } else res.status(403).send('Unknown session');
 })

@@ -1,6 +1,6 @@
 angular
     .module('Authentication')
-    .controller("AuthenticationCtrl", function ($scope, $mdDialog, AzureService) {
+    .controller("AuthenticationCtrl", function ($scope, $mdDialog, ConfigService) {
 
         var initialized = false;
         var request;
@@ -15,11 +15,12 @@ angular
             adfs: {
                 server: "",
                 entityID: "",
-                loginURL: "",
-                logoutURL: ""
+                loginUrl: "",
+                logoutURL: "",
+                entryPoint: "",
+                metadata :undefined
             }
         };
-        $scope.adfsMetadata = undefined;
         $scope.method = "azure";
         $scope.$watch("method.azure", function () {
             $scope.method.adfs = !$scope.method.azure;
@@ -27,27 +28,27 @@ angular
         $scope.$watch("method.adfs", function () {
             $scope.method.azure = !$scope.method.adfs;
         })
-        $scope.$watch("adfsMetadata", function (a, b) {
-            if ($scope.adfsMetadata) {
+        $scope.$watch("admin.adfs.metadata", function (a, b) {
+            if ($scope.admin.adfs.metadata) {
                 var start, stop, temp;
-                
-                start = $scope.adfsMetadata.indexOf("entityID=") + 10;
+
+                start = $scope.admin.adfs.metadata.indexOf("entityID=") + 10;
                 console.log(start);
-                if (start) $scope.admin.adfs.entityID = $scope.adfsMetadata.substring(start, $scope.adfsMetadata.indexOf("/>", start));
+                if (start) $scope.admin.adfs.entityID = $scope.admin.adfs.metadata.substring(start, $scope.admin.adfs.metadata.indexOf("\"", start));
                 start = -1;
 
-                start = $scope.adfsMetadata.indexOf("SingleSignOnService Binding=\"urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect\"");
-console.log(start);
-                if (start) start = $scope.adfsMetadata.indexOf("Location=", start) + 10;
+                start = $scope.admin.adfs.metadata.indexOf("SingleSignOnService Binding=\"urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect\"");
                 console.log(start);
-                if (start) $scope.admin.adfs.loginURL = $scope.adfsMetadata.substr(start, $scope.adfsMetadata.indexOf("\"", start));
+                if (start) start = $scope.admin.adfs.metadata.indexOf("Location=", start) + 10;
+                console.log(start);
+                if (start) $scope.admin.adfs.loginUrl = $scope.admin.adfs.metadata.substring(start, $scope.admin.adfs.metadata.indexOf("\"", start));
 
                 start = -1;
-                start = $scope.adfsMetadata.indexOf("SingleLogoutService Binding=\"urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect\"");
+                start = $scope.admin.adfs.metadata.indexOf("SingleLogoutService Binding=\"urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect\"");
                 console.log(start);
-                if (start) start = $scope.adfsMetadata.indexOf("Location=", start) + 10;
+                if (start) start = $scope.admin.adfs.metadata.indexOf("Location=", start) + 10;
                 console.log(start);
-                if (start) $scope.admin.adfs.logoutURL = $scope.adfsMetadata.substr(start, $scope.adfsMetadata.indexOf("\"", start));
+                if (start) $scope.admin.adfs.logoutUrl = $scope.admin.adfs.metadata.substring(start, $scope.admin.adfs.metadata.indexOf("\"", start));
             }
         })
         $scope.adfsCert = function () {
@@ -87,7 +88,18 @@ console.log(start);
         function azureSaveConfig() {
             $scope.isWorking = true;
             if (request) request.abort();
-            request = AzureService.post($scope.admin.azure);
+            request = ConfigService.post("azure", $scope.admin.azure);
+            request.then(function (promise) {
+                $scope.isWorking = false;
+                if (promise && promise.error) apiWarning(promise.error);
+                else reqDone();
+            })
+        }
+        function adfsSaveConfig() {
+            $scope.isWorking = true;
+            $scope.admin.adfs.entryPoint = $scope.admin.adfs.loginUrl;
+            if (request) request.abort();
+            request = ConfigService.post("adfs", $scope.admin.adfs);
             request.then(function (promise) {
                 $scope.isWorking = false;
                 if (promise && promise.error) apiWarning(promise.error);
@@ -95,8 +107,9 @@ console.log(start);
             })
         }
 
+
         $scope.isWorking = true;
-        request = AzureService.get();
+        request = ConfigService.get("azure");
         request.then(function (promise) {
             $scope.isWorking = false;
             if (promise && promise.error) apiWarning(promise.error);
@@ -119,17 +132,24 @@ console.log(start);
                 $scope.admin.azure.signin = promise.data.signin;
                 $scope.admin.azure.callback = promise.data.callback;
                 $scope.admin.azure.logout = promise.data.logout;
+            
             }
         })
 
 
 
         $scope.isValid = function () {
-            if ($scope.method.azure == true) {
+            if ($scope.method == "azure") {
                 if (!$scope.admin.azure.clientID || $scope.admin.azure.clientID == "") return false;
                 else if (!$scope.admin.azure.clientSecret || $scope.admin.azure.clientSecret == "") return false;
                 else if (!$scope.admin.azure.tenant || $scope.admin.azure.tenant == "") return false;
                 else if (!$scope.admin.azure.resource || $scope.admin.azure.resource == "") return false;
+                else return true;
+            }
+            else if ($scope.method == "adfs") {
+                if (!$scope.admin.adfs.entityID || $scope.admin.adfs.entityID == "") return false;
+                else if (!$scope.admin.adfs.loginUrl || $scope.admin.adfs.loginUrl == "") return false;
+                else if (!$scope.admin.adfs.logoutUrl || $scope.admin.adfs.logoutUrl == "") return false;
                 else return true;
             }
             else if ($scope.isWorking) return true;
@@ -138,30 +158,32 @@ console.log(start);
 
         $scope.save = function () {
             $scope.isWorking = true;
-            if ($scope.method.azure == true) {
+            if ($scope.method == 'azure') {
                 azureSaveConfig();
+            } else if ($scope.method == "adfs") {
+                adfsSaveConfig();
             }
         }
     })
-    .factory("AzureService", function ($http, $q, $rootScope) {
+    .factory("ConfigService", function ($http, $q, $rootScope) {
 
-        function get(azureConfig) {
+        function get(method, config) {
             var canceller = $q.defer();
             var request = $http({
-                url: "/api/azure/",
+                url: "/api/" + method + "/",
                 method: "GET",
-                data: { azure: azureConfig },
+                data: { config: config },
                 timeout: canceller.promise
             });
             return httpReq(request);
         }
 
-        function post(azureConfig) {
+        function post(method, config) {
             var canceller = $q.defer();
             var request = $http({
-                url: "/api/azure/",
+                url: "/api/" + method + "/",
                 method: "POST",
-                data: { azure: azureConfig },
+                data: { config: config },
                 timeout: canceller.promise
             });
             return httpReq(request);
@@ -193,4 +215,3 @@ console.log(start);
             post: post
         }
     });
-

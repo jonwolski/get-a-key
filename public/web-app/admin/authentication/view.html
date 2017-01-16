@@ -9,7 +9,7 @@
 		<span style="padding-left: 100px">
 		<md-button href="/admin/help/" target=_blank class="md-primary md-raised">Help</md-button>
 		</span>
-	</fieldset>
+	</fieldset> 
 
 	<fieldset ng-show="method=='azure'">
 		<legend> {{"authentication.azure.params" | translate}}</legend>
@@ -72,20 +72,20 @@
 					<span id="adfsEntityID" ng-disabled="true">{{admin.adfs.entityID}}</span>					
 				</md-input-container>
 				<md-input-container class="md-block flex-gt-sm md-input-focused">
-					<label for="adfsLoginURL">Login URL</label>
-					<span id="adfsLoginURL" ng-disabled="true">{{admin.adfs.loginURL}}</span>
+					<label for="adfsLoginUrl">Login URL</label>
+					<span id="adfsLoginUrl" ng-disabled="true">{{admin.adfs.loginUrl}}</span>
 				</md-input-container>
 				<md-input-container class="md-block flex-gt-sm md-input-focused">
-					<label for="adfsLogoutURL">Logout URL</label>
-					<span id="adfsLogoutURL" ng-disabled="true">{{admin.adfs.logoutURL}}</span>
+					<label for="adfsLogoutUrl">Logout URL</label>
+					<span id="adfsLogoutUrl" ng-disabled="true">{{admin.adfs.logoutUrl}}</span>
 				</md-input-container>
 			</div>
-			<md-input-container layout="column" flex=66>
+			<md-input-container layout="column" flex=66 md-whiteframe="2">
 				<label for="adfsMetadata">
 					<span translate="authentication.adfs.pasteAdfsMetadata"></span>
 					<span style="color: red">*</span>
 				</label>
-				<textarea id="adfsMetadata" ng-model="adfsMetadata" style="min-height: 182px; max-height: 200px; overflow-y: scroll;"></textarea>
+				<textarea id="adfsMetadata" ng-model="admin.adfs.metadata" style="min-height: 182px; max-height: 200px; overflow-y: scroll;"></textarea>
 			</md-input-container>
 		</md-continer>
 		<md-button class='md-primary md-raised' ng-disabled="" ng-href="/adfs/cert" translate="authentication.adfs.getAppCertificate" aria-label="Get App Certificate"></md-button>
