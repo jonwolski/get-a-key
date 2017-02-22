@@ -18,16 +18,11 @@ angular
                 loginUrl: "",
                 logoutURL: "",
                 entryPoint: "",
-                metadata :undefined
-            }
+                metadata: undefined
+            },
+            method: "azure"
         };
-        $scope.method = "azure";
-        $scope.$watch("method.azure", function () {
-            $scope.method.adfs = !$scope.method.azure;
-        });
-        $scope.$watch("method.adfs", function () {
-            $scope.method.azure = !$scope.method.adfs;
-        })
+
         $scope.$watch("admin.adfs.metadata", function (a, b) {
             if ($scope.admin.adfs.metadata) {
                 var start, stop, temp;
@@ -109,44 +104,32 @@ angular
 
 
         $scope.isWorking = true;
-        request = ConfigService.get("azure");
+        request = ConfigService.get();
         request.then(function (promise) {
             $scope.isWorking = false;
             if (promise && promise.error) apiWarning(promise.error);
             else {
-                $scope.method.azure = true;
-                $scope.method.adfs = false;
-                if (promise.data.azure) {
-                    $scope.admin.azure = promise.data.azure;
-                } else {
-                    $scope.admin = {
-                        azure: {
-                            clientId: "",
-                            clientSecret: "",
-                            tenant: "",
-                            resource: ""
-                        },
-                        adfs: {}
-                    };
-                }
+                if (promise.data.method) $scope.admin.method = promise.data.method;                
+                if (promise.data.azure) $scope.admin.azure = promise.data.azure;
+                if (promise.data.adfs) $scope.admin.adfs = promise.data.adfs;
                 $scope.admin.azure.signin = promise.data.signin;
                 $scope.admin.azure.callback = promise.data.callback;
                 $scope.admin.azure.logout = promise.data.logout;
-            
+
             }
         })
 
 
 
         $scope.isValid = function () {
-            if ($scope.method == "azure") {
+            if ($scope.admin.method == "azure") {
                 if (!$scope.admin.azure.clientID || $scope.admin.azure.clientID == "") return false;
                 else if (!$scope.admin.azure.clientSecret || $scope.admin.azure.clientSecret == "") return false;
                 else if (!$scope.admin.azure.tenant || $scope.admin.azure.tenant == "") return false;
                 else if (!$scope.admin.azure.resource || $scope.admin.azure.resource == "") return false;
                 else return true;
             }
-            else if ($scope.method == "adfs") {
+            else if ($scope.admin.method == "adfs") {
                 if (!$scope.admin.adfs.entityID || $scope.admin.adfs.entityID == "") return false;
                 else if (!$scope.admin.adfs.loginUrl || $scope.admin.adfs.loginUrl == "") return false;
                 else if (!$scope.admin.adfs.logoutUrl || $scope.admin.adfs.logoutUrl == "") return false;
@@ -158,21 +141,20 @@ angular
 
         $scope.save = function () {
             $scope.isWorking = true;
-            if ($scope.method == 'azure') {
+            if ($scope.admin.method == 'azure') {
                 azureSaveConfig();
-            } else if ($scope.method == "adfs") {
+            } else if ($scope.admin.method == "adfs") {
                 adfsSaveConfig();
             }
         }
     })
     .factory("ConfigService", function ($http, $q, $rootScope) {
 
-        function get(method, config) {
+        function get() {
             var canceller = $q.defer();
             var request = $http({
-                url: "/api/" + method + "/",
+                url: "/api/auth/",
                 method: "GET",
-                data: { config: config },
                 timeout: canceller.promise
             });
             return httpReq(request);
@@ -181,7 +163,7 @@ angular
         function post(method, config) {
             var canceller = $q.defer();
             var request = $http({
-                url: "/api/" + method + "/",
+                url: "/api/auth/" + method + "/",
                 method: "POST",
                 data: { config: config },
                 timeout: canceller.promise

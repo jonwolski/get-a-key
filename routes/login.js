@@ -42,8 +42,8 @@ function getCustom(req, next) {
 
 router.get("/login/:account_id/", getAccount, function (req, res) {
     var method = "";
-    if (req.session.account.azure) method = "/azure/" + req.params.account_id + "/login";
-    else if (req.session.account.adfs) method = "/adfs/" + req.params.account_id + "/login";
+    if (req.session.account.method=="azure") method = "/azure/" + req.params.account_id + "/login";
+    else if (req.session.account.method=="adfs") method = "/adfs/" + req.params.account_id + "/login";
     res.render("login", {
         title: 'Get a Key!',
         oauthUrl: "https://cloud.aerohive.com/thirdpartylogin?client_id=" + devAccount.clientID + "&redirect_uri=" + devAccount.redirectUrl,

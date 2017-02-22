@@ -64,12 +64,9 @@ app.use('/adfs/', adfs);
 //Get a Key
 var webApp = require('./routes/web-app');
 app.use('/web-app/', webApp);
-//API Azure
-var apiAzure = require('./routes/api.azure');
-app.use('/api/azure/', apiAzure);
-//API
-var apiAdfs = require('./routes/api.adfs');
-app.use('/api/adfs/', apiAdfs);
+//API Auth Config
+var apiAuth = require('./routes/api.auth');
+app.use('/api/auth/', apiAuth);
 //API
 var api = require('./routes/api');
 app.use('/api/', api);

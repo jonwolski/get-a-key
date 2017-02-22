@@ -83,7 +83,7 @@ html
                 var f = 0.05;
                 element.style.opacity = parseFloat(element.style.opacity) - (f * i * i);
                 i++;
-                if (element.style.opacity > 0 && i < 50) fadeIn(element)
+                if (!element.style.opacity < 0 && i < 50) fadeIn(element)
                 else element.parentNode.removeChild(element);;
                 }, 20);
         }

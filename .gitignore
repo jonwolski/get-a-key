@@ -1,0 +1,7 @@
+bower_components
+node_modules
+config.js
+.DS_Store
+/certs/*.key
+/certs/*.xml
+/certs/*.cert

@@ -2,7 +2,7 @@
 	<fieldset>
 		<legend> {{"authentication.method" | translate}} </legend>
 		
-		<md-radio-group ng-model="method">
+		<md-radio-group ng-model="admin.method">
 			<md-radio-button value="azure" class="md-primary"><span>AzureAD</span></md-radio-button>
       		<md-radio-button value="adfs" class="md-primary">ADFS</md-radio-button>
 		</md-radio-group>
@@ -11,7 +11,7 @@
 		</span>
 	</fieldset> 
 
-	<fieldset ng-show="method=='azure'">
+	<fieldset ng-show="admin.method=='azure'">
 		<legend> {{"authentication.azure.params" | translate}}</legend>
 		<md-input-container class="md-block flex-gt-sm md-input-focused">
 			<label for="azureSignin" translate="authentication.azure.signinURL"></label>
@@ -55,7 +55,7 @@
 		</md-input-container>
 	</fieldset>
 
-	<fieldset ng-show="method=='adfs'">
+	<fieldset ng-show="admin.method=='adfs'">
 		<legend> {{"authentication.adfs.params" | translate}}</legend>
 		<md-input-container class="md-block flex-gt-sm">
 			<label for="adfsServer">
@@ -88,7 +88,7 @@
 				<textarea id="adfsMetadata" ng-model="admin.adfs.metadata" style="min-height: 182px; max-height: 200px; overflow-y: scroll;"></textarea>
 			</md-input-container>
 		</md-continer>
-		<md-button class='md-primary md-raised' ng-disabled="" ng-href="/adfs/cert" translate="authentication.adfs.getAppCertificate" aria-label="Get App Certificate"></md-button>
+		<md-button class='md-primary md-raised' ng-disabled="" ng-href="/api/auth/cert" translate="authentication.adfs.getAppCertificate" aria-label="Get App Certificate"></md-button>
 		Not yet available...
 	</fieldset>
 	<md-content layout="column" layout-gt-sm="row">

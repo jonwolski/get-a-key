@@ -210,10 +210,10 @@ function saveCustomization(custom, req, cb) {
     }
     else custom.colors.enable = false;
 
-    if (req.body.login) custom.login = req.body.login;        
+    if (req.body.login) custom.login = req.body.login;
     else custom.login.enable = false;
 
-    if (req.body.app) custom.app = req.body.app;        
+    if (req.body.app) custom.app = req.body.app;
     else custom.app.enable = false;
 
     if (req.body.app) custom.app = req.body.app;

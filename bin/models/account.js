@@ -13,6 +13,7 @@ var AccountSchema = new mongoose.Schema({
     expireAt: { type: String, required: true },
     config: { type: mongoose.Schema.ObjectId, ref: "Config" },
     customization: { type: mongoose.Schema.ObjectId, ref: "Customization" },
+    method: { type: String},
     azure: { type: mongoose.Schema.ObjectId, ref: "Azure" },
     adfs: { type: mongoose.Schema.ObjectId, ref: "Adfs" },
     created_at: { type: Date },

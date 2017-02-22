@@ -24,13 +24,27 @@ function getAccount(req, res, next) {
       if (err) res.status(500).json({ error: err });
       else {
         req.account = result;
+        console.log({
+            entryPoint: result.adfs.entryPoint,
+            issuer: req.params.account_id+"."+vhost,
+            callbackUrl: 'https://' + vhost + '/adfs/' + req.params.account_id + '/postResponse',
+            privateCert: fs.readFileSync('../certs/' + req.params.account_id+"."+vhost+ '.key', 'utf-8'),
+            cert: fs.readFileSync('../certs/' + req.params.account_id+"."+vhost + '.cert', 'utf-8'),
+            // other authn contexts are available e.g. windows single sign-on
+            authnContext: 'http://schemas.microsoft.com/ws/2008/06/identity/authenticationmethod/password',
+            // not sure if this is necessary?
+            acceptedClockSkewMs: -1,
+            identifierFormat: null,
+            // this is configured under the Advanced tab in AD FS relying party
+            signatureAlgorithm: 'sha256'
+          });
         passport.use(new SamlStrategy(
           {
             entryPoint: result.adfs.entryPoint,
-            issuer: vhost,
-            callbackUrl: 'https://'+vhost+'/'+req.params.account_id+'/adfs/postResponse',
-            privateCert: fs.readFileSync('../certs/'+vhost+'.key', 'utf-8'),
-            cert: fs.readFileSync('../certs/'+vhost+'.cert', 'utf-8'),
+            issuer: req.params.account_id+"."+vhost,
+            callbackUrl: 'https://' + vhost + '/adfs/' + req.params.account_id + '/postResponse',
+            privateCert: fs.readFileSync('../certs/' + req.params.account_id+"."+vhost+ '.key', 'utf-8'),
+            cert: fs.readFileSync('../certs/' + req.params.account_id+"."+vhost + '.cert', 'utf-8'),
             // other authn contexts are available e.g. windows single sign-on
             authnContext: 'http://schemas.microsoft.com/ws/2008/06/identity/authenticationmethod/password',
             // not sure if this is necessary?
@@ -76,11 +90,5 @@ router.get('/logout/', function (req, res) {
   req.session.destroy();
   res.redirect('/login/');
 });
-
-router.get("/cert", function (req, res) {
-  var vhost = require("../config").appServer.vhost;
-  var file = '../certs/' + vhost + ".xml";
-  res.download(file);
-})
 
 module.exports = router;
