@@ -1,0 +1,30 @@
+---
+
+version: '3'
+services:
+  mongo:
+    image: mongo
+  web:
+    build: .
+    #    command: bin/www
+    volumes:
+      - ./src:/app
+    ports:
+      - "51360:51360"
+    depends_on:
+      - mongo
+  nginx:
+    environment:
+      VIRTUAL_HOST: gak.local
+    image: jwilder/nginx-proxy
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - certs:/etc/nginx/certs:ro
+      - /etc/nginx/vhost.d
+      - /usr/share/nginx/html
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+        #	    --security-opt label:disable \
+volumes:
+  certs:
